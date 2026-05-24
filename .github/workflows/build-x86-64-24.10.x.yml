@@ -135,12 +135,14 @@ jobs:
           fi
 
       - name: Upload ImmortWrt as release assets
-        uses: softprops/action-gh-release@v2.2.1
-        with:
-          tag_name: Autobuild-x86-64
-          body_path: ${{ github.workspace }}/router-info.md
-          files: |
+        run: |
+          gh release create Autobuild-x86-64 \
+            --title "Autobuild-x86-64" \
+            --notes-file ${{ github.workspace }}/router-info.md \
+            --draft=false \
+            ${{ github.workspace }}/bin/targets/x86/64/*squashfs-combined-efi.img.gz \
+          || gh release upload Autobuild-x86-64 \
+            --clobber \
             ${{ github.workspace }}/bin/targets/x86/64/*squashfs-combined-efi.img.gz
-          token: ${{ secrets.GITHUB_TOKEN }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
